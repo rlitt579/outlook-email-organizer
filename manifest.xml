@@ -156,7 +156,7 @@
             <bt:Images>
                 <bt:Image id="Icon.16x16" DefaultValue="https://rlitt579.github.io/outlook-email-organizer/icon-16.png" />
                 <bt:Image id="Icon.32x32" DefaultValue="https://rlitt579.github.io/outlook-email-organizer/icon-32.png" />
-                <bt:Image id="Icon.80x80" DefaultValue="https://rlitt579.github.io/outlook-email-organizer/icon-80.png" />
+                <bt:Image id="Icon.80x80" DefaultValue="https://github.com/rlitt579/outlook-email-organizer/blob/main/icon-80.png" />
             </bt:Images>
             <bt:Urls>
                 <bt:Url id="Commands.Url" DefaultValue="https://rlitt579.github.io/outlook-email-organizer/commands.html" />
