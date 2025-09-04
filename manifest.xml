@@ -23,7 +23,7 @@
     <HighResolutionIconUrl DefaultValue="https://github.com/rlitt579/outlook-email-organizer/blob/main/icon-80.png" />
     
     <!-- Support URL -->
-    <SupportUrl DefaultValue="https://github.com/rlitt579/outlook-email-organizer/blob/main/deployment_guide.md" />
+    <SupportUrl DefaultValue="https://github.com/rlitt579/outlook-email-organizer/blob/main/deployment-guide.md" />
     
     <!-- App Domains - Add your hosting domain -->
     <AppDomains>
@@ -45,7 +45,7 @@
     <FormSettings>
         <Form xsi:type="ItemRead">
             <DesktopSettings>
-                <SourceLocation DefaultValue="https://github.com/rlitt579/outlook-email-organizer/blob/main/email_organizer.html" />
+                <SourceLocation DefaultValue="https://github.com/rlitt579/outlook-email-organizer/blob/main/email-organizer.html" />
                 <RequestedHeight>450</RequestedHeight>
             </DesktopSettings>
         </Form>
