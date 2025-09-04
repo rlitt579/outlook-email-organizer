@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Organizer</title>
+    <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #faf9f8;
+            color: #323130;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        
+        .header {
+            background: #ffffff;
+            border-bottom: 1px solid #edebe9;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .header-icon {
+            width: 20px;
+            height: 20px;
+            background: #0078d4;
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .header-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #323130;
+            margin: 0;
+        }
+        
+        .content {
+            padding: 20px;
+        }
+        
+        .command-bar {
+            background: #ffffff;
+            border: 1px solid #edebe9;
+            border-radius: 2px;
+            padding: 8px 12px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .organize-btn {
+            background: #0078d4;
+            color: #ffffff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 2px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 400;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: background-color 0.1s ease;
+        }
+        
+        .organize-btn:hover {
+            background: #106ebe;
+        }
+        
+        .organize-btn:active {
+            background: #005a9e;
+        }
+        
+        .organize-btn:disabled {
+            background: #f3f2f1;
+            color: #a19f9d;
+            cursor: not-allowed;
+        }
+        
+        .organize-btn::before {
+            content: "↕";
+            font-size: 12px;
+        }
+        
+        .status-message {
+            background: #fff4ce;
+            border: 1px solid #f9e71e;
+            border-left: 3px solid #f9e71e;
+            padding: 8px 12px;
+            margin-bottom: 16px;
+            border-radius: 2px;
+            font-size: 13px;
+            display: none;
+        }
+        
+        .status-message.show {
+            display: block;
+        }
+        
+        .stats-card {
+            background: #ffffff;
+            border: 1px solid #edebe9;
+            border-radius: 2px;
+            padding: 16px;
+            margin-bottom: 16px;
+            display: none;
+        }
+        
+        .stats-card.show {
+            display: block;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            text-align: center;
+        }
+        
+        .stat-item {
+            padding: 8px;
+        }
+        
+        .stat-number {
+            font-size: 24px;
+            font-weight: 600;
+            color: #0078d4;
+            margin-bottom: 4px;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #605e5c;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .sender-list {
+            background: #ffffff;
+            border: 1px solid #edebe9;
+            border-radius: 2px;
+        }
+        
+        .sender-item {
+            border-bottom: 1px solid #edebe9;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: background-color 0.1s ease;
+            position: relative;
+        }
+        
+        .sender-item:last-child {
+            border-bottom: none;
+        }
+        
+        .sender-item:hover {
+            background: #f3f2f1;
+        }
+        
+        .sender-item.selected {
+            background: #deecf9;
+            border-left: 3px solid #0078d4;
+            padding-left: 13px;
+        }
+        
+        .sender-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        
+        .sender-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .sender-name {
+            font-weight: 600;
+            color: #323130;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .sender-email {
+            font-size: 13px;
+            color: #605e5c;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .sender-count {
+            background: #edebe9;
+            color: #323130;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        
+        .delete-options {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #edebe9;
+            display: none;
+            gap: 8px;
+        }
+        
+        .sender-item.selected .delete-options {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        
+        .delete-btn {
+            background: #ffffff;
+            color: #d13438;
+            border: 1px solid #d13438;
+            padding: 4px 8px;
+            border-radius: 2px;
+            cursor: pointer;
+            font-size: 12px;
+            font-family: inherit;
+            transition: all 0.1s ease;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .delete-btn:hover {
+            background: #d13438;
+            color: #ffffff;
+        }
+        
+        .delete-btn:active {
+            background: #a4262c;
+            border-color: #a4262c;
+        }
+        
+        .delete-btn.danger {
+            background: #d13438;
+            color: #ffffff;
+        }
+        
+        .delete-btn.danger:hover {
+            background: #a4262c;
+        }
+        
+        .delete-btn::before {
+            content: "🗑";
+            font-size: 10px;
+        }
+        
+        .message {
+            padding: 8px 12px;
+            border-radius: 2px;
+            font-size: 13px;
+            margin-bottom: 16px;
+            border-left: 3px solid;
+        }
+        
+        .message.error {
+            background: #fde7e9;
+            border-left-color: #d13438;
+            color: #a4262c;
+        }
+        
+        .message.success {
+            background: #dff6dd;
+            border-left-color: #107c10;
+            color: #0b5d0b;
+        }
+        
+        .message.info {
+            background: #deecf9;
+            border-left-color: #0078d4;
+            color: #004578;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #605e5c;
+        }
+        
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+        
+        .empty-state-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #323130;
+        }
+        
+        .empty-state-description {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #edebe9;
+            border-radius: 50%;
+            border-top-color: #0078d4;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Scrollbar styling for Outlook consistency */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f3f2f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #c8c6c4;
+            border-radius: 3px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a19f9d;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-icon">📧</div>
+        <h1 class="header-title">Email Organizer</h1>
+    </div>
+    
+    <div class="content">
+        <div class="command-bar">
+            <button id="organizeBtn" class="organize-btn">
+                Analyze Inbox
+            </button>
+        </div>
+        
+        <div id="statusMessage" class="status-message">
+            <span class="loading-spinner"></span>
+            <span id="statusText">Analyzing your emails...</span>
+        </div>
+        
+        <div id="statsCard" class="stats-card">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number" id="totalEmails">0</div>
+                    <div class="stat-label">Total Emails</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="totalSenders">0</div>
+                    <div class="stat-label">Unique Senders</div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="messageContainer"></div>
+        
+        <div id="senderList" class="sender-list" style="display: none;"></div>
+        
+        <div id="emptyState" class="empty-state">
+            <div class="empty-state-icon">📬</div>
+            <div class="empty-state-title">Ready to organize</div>
+            <div class="empty-state-description">
+                Click "Analyze Inbox" to sort your emails by sender frequency and start managing your mailbox more efficiently.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let emailData = {};
+        let senderData = [];
+        
+        // Initialize Office Add-in
+        Office.onReady((info) => {
+            if (info.host === Office.HostType.Outlook) {
+                document.getElementById('organizeBtn').addEventListener('click', organizeEmails);
+                console.log('Email Organizer loaded successfully');
+            }
+        });
+        
+        function showMessage(message, type = 'info') {
+            const container = document.getElementById('messageContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            messageDiv.textContent = message;
+            container.appendChild(messageDiv);
+            
+            setTimeout(() => {
+                messageDiv.remove();
+            }, type === 'error' ? 5000 : 3000);
+        }
+        
+        function showStatus(message, show = true) {
+            const statusDiv = document.getElementById('statusMessage');
+            const statusText = document.getElementById('statusText');
+            statusText.textContent = message;
+            statusDiv.classList.toggle('show', show);
+        }
+        
+        async function organizeEmails() {
+            const organizeBtn = document.getElementById('organizeBtn');
+            const statsCard = document.getElementById('statsCard');
+            const senderListDiv = document.getElementById('senderList');
+            const emptyState = document.getElementById('emptyState');
+            
+            organizeBtn.disabled = true;
+            organizeBtn.innerHTML = '<span class="loading-spinner"></span> Analyzing...';
+            showStatus('Analyzing your emails...', true);
+            senderListDiv.style.display = 'none';
+            statsCard.classList.remove('show');
+            emptyState.style.display = 'none';
+            
+            try {
+                await Office.context.mailbox.getCallbackTokenAsync({isRest: true}, async (result) => {
+                    if (result.status === Office.AsyncResultStatus.Succeeded) {
+                        const accessToken = result.value;
+                        await fetchAndAnalyzeEmails(accessToken);
+                    } else {
+                        throw new Error('Failed to get access token');
+                    }
+                });
+            } catch (error) {
+                showMessage('Error organizing emails: ' + error.message, 'error');
+                console.error('Error:', error);
+            } finally {
+                organizeBtn.disabled = false;
+                organizeBtn.innerHTML = '↕ Analyze Inbox';
+                showStatus('', false);
+            }
+        }
+        
+        async function fetchAndAnalyzeEmails(accessToken) {
+            try {
+                // Get mailbox info
+                const mailboxUrl = Office.context.mailbox.restUrl;
+                
+                // Fetch emails from inbox
+                const response = await fetch(`${mailboxUrl}/v2.0/me/messages?$top=1000&$select=id,sender,subject,receivedDateTime`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                const emails = data.value || [];
+                
+                // Analyze sender frequency
+                const senderMap = {};
+                emailData = {}; // Store email IDs by sender
+                
+                emails.forEach(email => {
+                    if (email.sender && email.sender.emailAddress) {
+                        const senderEmail = email.sender.emailAddress.address.toLowerCase();
+                        const senderName = email.sender.emailAddress.name || senderEmail;
+                        
+                        if (!senderMap[senderEmail]) {
+                            senderMap[senderEmail] = {
+                                name: senderName,
+                                email: senderEmail,
+                                count: 0,
+                                emailIds: []
+                            };
+                            emailData[senderEmail] = [];
+                        }
+                        
+                        senderMap[senderEmail].count++;
+                        senderMap[senderEmail].emailIds.push(email.id);
+                        emailData[senderEmail].push(email.id);
+                    }
+                });
+                
+                // Convert to array and sort by count (descending)
+                senderData = Object.values(senderMap).sort((a, b) => b.count - a.count);
+                
+                // Display results
+                displaySenderData(emails.length);
+                
+            } catch (error) {
+                throw new Error('Failed to fetch emails: ' + error.message);
+            }
+        }
+        
+        function displaySenderData(totalEmails) {
+            const statsCard = document.getElementById('statsCard');
+            const senderListDiv = document.getElementById('senderList');
+            const totalEmailsSpan = document.getElementById('totalEmails');
+            const totalSendersSpan = document.getElementById('totalSenders');
+            const emptyState = document.getElementById('emptyState');
+            
+            totalEmailsSpan.textContent = totalEmails.toLocaleString();
+            totalSendersSpan.textContent = senderData.length.toLocaleString();
+            statsCard.classList.add('show');
+            emptyState.style.display = 'none';
+            
+            senderListDiv.innerHTML = '';
+            senderListDiv.style.display = 'block';
+            
+            if (senderData.length === 0) {
+                senderListDiv.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <div class="empty-state-title">No emails found</div>
+                        <div class="empty-state-description">
+                            Your inbox appears to be empty or no emails with sender information were found.
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            senderData.forEach((sender, index) => {
+                const senderElement = document.createElement('div');
+                senderElement.className = 'sender-item';
+                senderElement.innerHTML = `
+                    <div class="sender-header">
+                        <div class="sender-info">
+                            <div class="sender-name">${escapeHtml(sender.name)}</div>
+                            <div class="sender-email">${escapeHtml(sender.email)}</div>
+                        </div>
+                        <div class="sender-count">${sender.count.toLocaleString()}</div>
+                    </div>
+                    <div class="delete-options">
+                        <button class="delete-btn" onclick="deleteEmails('${sender.email}', 'one')">Delete Latest</button>
+                        <button class="delete-btn" onclick="deleteEmails('${sender.email}', 'multiple')">Delete 5</button>
+                        <button class="delete-btn danger" onclick="deleteEmails('${sender.email}', 'all')">Delete All</button>
+                    </div>
+                `;
+                
+                senderElement.addEventListener('click', (e) => {
+                    if (!e.target.classList.contains('delete-btn')) {
+                        toggleSenderSelection(senderElement);
+                    }
+                });
+                
+                senderListDiv.appendChild(senderElement);
+            });
+            
+            showMessage(`Found ${senderData.length} unique senders across ${totalEmails} emails`, 'success');
+        }
+        
+        function toggleSenderSelection(element) {
+            // Remove selection from other items
+            document.querySelectorAll('.sender-item').forEach(item => {
+                if (item !== element) {
+                    item.classList.remove('selected');
+                }
+            });
+            
+            // Toggle selection on clicked item
+            element.classList.toggle('selected');
+        }
+        
+        async function deleteEmails(senderEmail, deleteType) {
+            if (!emailData[senderEmail] || emailData[senderEmail].length === 0) {
+                showMessage('No emails found for this sender', 'error');
+                return;
+            }
+            
+            let emailsToDelete = [];
+            let confirmMessage = '';
+            
+            switch (deleteType) {
+                case 'one':
+                    emailsToDelete = [emailData[senderEmail][0]];
+                    confirmMessage = 'Delete the latest email from this sender?';
+                    break;
+                case 'multiple':
+                    const count = Math.min(5, emailData[senderEmail].length);
+                    emailsToDelete = emailData[senderEmail].slice(0, count);
+                    confirmMessage = `Delete ${count} emails from this sender?`;
+                    break;
+                case 'all':
+                    emailsToDelete = [...emailData[senderEmail]];
+                    confirmMessage = `Delete all ${emailsToDelete.length} emails from this sender?`;
+                    break;
+            }
+            
+            if (!confirm(confirmMessage)) {
+                return;
+            }
+            
+            showStatus('Deleting emails...', true);
+            
+            try {
+                await Office.context.mailbox.getCallbackTokenAsync({isRest: true}, async (result) => {
+                    if (result.status === Office.AsyncResultStatus.Succeeded) {
+                        const accessToken = result.value;
+                        const mailboxUrl = Office.context.mailbox.restUrl;
+                        
+                        // Delete emails one by one
+                        let deletedCount = 0;
+                        for (const emailId of emailsToDelete) {
+                            try {
+                                const response = await fetch(`${mailboxUrl}/v2.0/me/messages/${emailId}`, {
+                                    method: 'DELETE',
+                                    headers: {
+                                        'Authorization': `Bearer ${accessToken}`
+                                    }
+                                });
+                                
+                                if (response.ok) {
+                                    deletedCount++;
+                                    // Remove from our local data
+                                    const index = emailData[senderEmail].indexOf(emailId);
+                                    if (index > -1) {
+                                        emailData[senderEmail].splice(index, 1);
+                                    }
+                                }
+                            } catch (error) {
+                                console.error('Error deleting email:', error);
+                            }
+                        }
+                        
+                        if (deletedCount > 0) {
+                            showMessage(`Successfully deleted ${deletedCount} email(s)`, 'success');
+                            // Update the sender count in the UI
+                            updateSenderCount(senderEmail, deletedCount);
+                        } else {
+                            showMessage('Failed to delete emails', 'error');
+                        }
+                    }
+                });
+            } catch (error) {
+                showMessage('Error deleting emails: ' + error.message, 'error');
+            } finally {
+                showStatus('', false);
+            }
+        }
+        
+        function updateSenderCount(senderEmail, deletedCount) {
+            // Find and update sender data
+            const senderIndex = senderData.findIndex(s => s.email === senderEmail);
+            if (senderIndex !== -1) {
+                senderData[senderIndex].count -= deletedCount;
+                if (senderData[senderIndex].count <= 0) {
+                    senderData.splice(senderIndex, 1);
+                }
+                
+                // Re-sort and re-display
+                senderData.sort((a, b) => b.count - a.count);
+                displaySenderData(Object.values(emailData).reduce((sum, emails) => sum + emails.length, 0));
+            }
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>

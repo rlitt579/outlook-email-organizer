@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Organizer Commands</title>
+    <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+</head>
+<body>
+    <script>
+        // Initialize Office Add-in
+        Office.onReady((info) => {
+            if (info.host === Office.HostType.Outlook) {
+                console.log('Email Organizer commands loaded');
+            }
+        });
+
+        // Function to handle taskpane opening
+        function openTaskPane(event) {
+            // This function can be used for button commands if needed
+            // Currently, the taskpane is opened via ShowTaskpane action in manifest
+            Office.addin.showAsTaskpane();
+            
+            // Signal that the command is complete
+            event.completed();
+        }
+
+        // Function to handle any custom commands
+        function executeCommand(event) {
+            try {
+                // Custom command logic can go here
+                console.log('Custom command executed');
+                
+                // Complete the command
+                event.completed();
+            } catch (error) {
+                console.error('Command execution failed:', error);
+                event.completed();
+            }
+        }
+
+        // Expose functions globally for manifest references
+        window.openTaskPane = openTaskPane;
+        window.executeCommand = executeCommand;
+    </script>
+</body>
+</html>
