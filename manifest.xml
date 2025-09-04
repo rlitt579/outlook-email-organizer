@@ -27,7 +27,7 @@
     
     <!-- App Domains - Add your hosting domain -->
     <AppDomains>
-        <AppDomain>https://rlitt579.github.io/outlook-email-organizer/</AppDomain>
+        <AppDomain>https://rlitt579.github.io/outlook-email-organizer</AppDomain>
     </AppDomains>
     <!-- End Basic Settings -->
 
