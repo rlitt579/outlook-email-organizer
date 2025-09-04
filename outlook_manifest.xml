@@ -7,7 +7,7 @@
     xsi:type="MailApp">
 
     <!-- Begin Basic Settings -->
-    <Id>4e4c6529-6729-460e-abdd-7c94d5ba4076</Id>
+    <Id>63c8b297-873b-41ce-8fdd-48edc3e114e9</Id>
     <Version>1.0.0.0</Version>
     <ProviderName>Email Organizer Solutions</ProviderName>
     <DefaultLocale>en-US</DefaultLocale>
@@ -27,7 +27,7 @@
     
     <!-- App Domains - Add your hosting domain -->
     <AppDomains>
-        <AppDomain>https://github.com/rlitt579/outlook-email-organizer.git</AppDomain>
+        <AppDomain>https://your-domain.com</AppDomain>
     </AppDomains>
     <!-- End Basic Settings -->
 
@@ -72,7 +72,12 @@
                     <!-- Function File -->
                     <FunctionFile resid="Commands.Url" />
                     
-                    <!-- Task Pane -->
+                    <!-- Module Extension Point - Always visible in ribbon -->
+                    <ExtensionPoint xsi:type="Module">
+                        <SourceLocation resid="Taskpane.Url" />
+                    </ExtensionPoint>
+                    
+                    <!-- Task Pane - Message Read -->
                     <ExtensionPoint xsi:type="MessageReadCommandSurface">
                         <OfficeTab id="TabDefault">
                             <Group id="msgReadGroup">
@@ -102,6 +107,30 @@
                             <Group id="msgComposeGroup">
                                 <Label resid="GroupLabel" />
                                 <Control xsi:type="Button" id="msgComposeOpenPaneButton">
+                                    <Label resid="TaskpaneButton.Label" />
+                                    <Supertip>
+                                        <Title resid="TaskpaneButton.Label" />
+                                        <Description resid="TaskpaneButton.Tooltip" />
+                                    </Supertip>
+                                    <Icon>
+                                        <bt:Image size="16" resid="Icon.16x16" />
+                                        <bt:Image size="32" resid="Icon.32x32" />
+                                        <bt:Image size="80" resid="Icon.80x80" />
+                                    </Icon>
+                                    <Action xsi:type="ShowTaskpane">
+                                        <SourceLocation resid="Taskpane.Url" />
+                                    </Action>
+                                </Control>
+                            </Group>
+                        </OfficeTab>
+                    </ExtensionPoint>
+                    
+                    <!-- Mailbox Command Surface - Always available -->
+                    <ExtensionPoint xsi:type="MailboxCommandSurface">
+                        <OfficeTab id="TabDefault">
+                            <Group id="mailboxGroup">
+                                <Label resid="GroupLabel" />
+                                <Control xsi:type="Button" id="mailboxOpenPaneButton">
                                     <Label resid="TaskpaneButton.Label" />
                                     <Supertip>
                                         <Title resid="TaskpaneButton.Label" />
