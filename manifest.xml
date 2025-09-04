@@ -160,7 +160,7 @@
             </bt:Images>
             <bt:Urls>
                 <bt:Url id="Commands.Url" DefaultValue="https://rlitt579.github.io/outlook-email-organizer/commands.html" />
-                <bt:Url id="Taskpane.Url" DefaultValue="https://rlitt579.github.io/outlook-email-organizer/email_organizer.html" />
+                <bt:Url id="Taskpane.Url" DefaultValue="https://github.com/rlitt579/outlook-email-organizer/blob/main/email-organizer.html" />
             </bt:Urls>
             <bt:ShortStrings>
                 <bt:String id="GroupLabel" DefaultValue="Email Organizer" />
