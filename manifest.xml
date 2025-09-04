@@ -45,7 +45,7 @@
     <FormSettings>
         <Form xsi:type="ItemRead">
             <DesktopSettings>
-                <SourceLocation DefaultValue="https://your-domain.com/email-organizer.html" />
+                <SourceLocation DefaultValue="https://github.com/rlitt579/outlook-email-organizer/blob/main/email_organizer.html" />
                 <RequestedHeight>450</RequestedHeight>
             </DesktopSettings>
         </Form>
