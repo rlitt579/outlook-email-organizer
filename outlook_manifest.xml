@@ -19,15 +19,15 @@
     <Description DefaultValue="Organize your Outlook mailbox by sender frequency and manage emails efficiently with smart deletion options." />
     
     <!-- Icon URLs - Replace with your actual hosted icon URLs -->
-    <IconUrl DefaultValue="https://your-domain.com/icons/icon-32.png" />
-    <HighResolutionIconUrl DefaultValue="https://your-domain.com/icons/icon-80.png" />
+    <IconUrl DefaultValue="https://github.com/rlitt579/outlook-email-organizer/blob/main/icon-32.png" />
+    <HighResolutionIconUrl DefaultValue="https://github.com/rlitt579/outlook-email-organizer/blob/main/icon-80.png" />
     
     <!-- Support URL -->
-    <SupportUrl DefaultValue="https://your-domain.com/support" />
+    <SupportUrl DefaultValue="https://github.com/rlitt579/outlook-email-organizer/blob/main/deployment_guide.md" />
     
     <!-- App Domains - Add your hosting domain -->
     <AppDomains>
-        <AppDomain>https://your-domain.com</AppDomain>
+        <AppDomain>https://rlitt579.github.io</AppDomain>
     </AppDomains>
     <!-- End Basic Settings -->
 
